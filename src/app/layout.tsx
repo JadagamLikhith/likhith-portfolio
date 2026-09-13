@@ -15,7 +15,7 @@ const inter = Inter({
 });
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://likhith-portfolio.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://likhith-portfolio-sage.vercel.app";
 
 export const viewport: Viewport = {
   themeColor: "#06070B",
