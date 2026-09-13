@@ -3,14 +3,28 @@ import { NextRequest } from "next/server";
 import { POST } from "@/app/api/contact/route";
 import { getClientIp } from "@/lib/client-ip";
 import { rateLimiter, InMemoryRateLimiter } from "@/lib/rate-limit";
-import { emailService, ProductionSafeEmailService } from "@/lib/email";
+import { emailService, ResendEmailService, escapeHtml } from "@/lib/email";
 
-describe("Contact API Route Handler & Email Service", () => {
+// Mock Resend SDK
+const mockSend = vi.fn();
+
+vi.mock("resend", () => {
+  return {
+    Resend: class MockResend {
+      emails = {
+        send: mockSend,
+      };
+    },
+  };
+});
+
+describe("Contact API Route Handler & Resend Email Service", () => {
   const originalEnv = process.env;
 
   beforeEach(() => {
     rateLimiter.reset?.();
-    vi.restoreAllMocks();
+    vi.clearAllMocks();
+    mockSend.mockReset();
     process.env = { ...originalEnv };
   });
 
@@ -30,7 +44,7 @@ describe("Contact API Route Handler & Email Service", () => {
     });
   }
 
-  it("returns 200 and success for valid payload in development", async () => {
+  it("returns 200 and success for valid payload in development fallback mode", async () => {
     delete process.env.RESEND_API_KEY;
     (process.env as Record<string, string>).NODE_ENV = "development";
 
@@ -69,9 +83,16 @@ describe("Contact API Route Handler & Email Service", () => {
     );
   });
 
-  it("returns 200 in production when email provider is configured", async () => {
+  it("returns 200 in production when email provider is configured and Resend succeeds", async () => {
     process.env.RESEND_API_KEY = "re_test_key_123";
+    process.env.CONTACT_NOTIFICATION_EMAIL = "likhithjadagam7@gmail.com";
+    process.env.CONTACT_FROM_EMAIL = "onboarding@resend.dev";
     (process.env as Record<string, string>).NODE_ENV = "production";
+
+    mockSend.mockResolvedValueOnce({
+      data: { id: "msg_prod_resend_999" },
+      error: null,
+    });
 
     const req = createMockRequest({
       name: "Alex Rivera",
@@ -84,6 +105,7 @@ describe("Contact API Route Handler & Email Service", () => {
 
     const json = await res.json();
     expect(json.success).toBe(true);
+    expect(mockSend).toHaveBeenCalledTimes(1);
   });
 
   it("returns 400 for missing required fields", async () => {
@@ -260,12 +282,20 @@ describe("Contact API Route Handler & Email Service", () => {
     });
   });
 
-  describe("Email Service Abstraction Safety Guards", () => {
+  describe("Resend Email Service Unit Tests & Safety Guards", () => {
+    it("escapes unsafe HTML characters to prevent XSS/injection in emails", () => {
+      const unsafe = `<script>alert("xss")</script> & 'hello' "world"`;
+      const safe = escapeHtml(unsafe);
+      expect(safe).toBe(
+        `&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt; &amp; &#039;hello&#039; &quot;world&quot;`
+      );
+    });
+
     it("handles development mode without API key by falling back safely", async () => {
       delete process.env.RESEND_API_KEY;
       (process.env as Record<string, string>).NODE_ENV = "development";
 
-      const service = new ProductionSafeEmailService();
+      const service = new ResendEmailService();
       const result = await service.sendContactNotification({
         name: "Alex Rivera",
         email: "alex@example.com",
@@ -275,13 +305,16 @@ describe("Contact API Route Handler & Email Service", () => {
 
       expect(result.success).toBe(true);
       expect(result.messageId).toContain("dev_fallback");
+      expect(mockSend).not.toHaveBeenCalled();
     });
 
-    it("blocks production mode without API key and returns failure", async () => {
+    it("blocks production mode without RESEND_API_KEY and returns failure", async () => {
       delete process.env.RESEND_API_KEY;
+      process.env.CONTACT_NOTIFICATION_EMAIL = "likhithjadagam7@gmail.com";
+      process.env.CONTACT_FROM_EMAIL = "onboarding@resend.dev";
       (process.env as Record<string, string>).NODE_ENV = "production";
 
-      const service = new ProductionSafeEmailService();
+      const service = new ResendEmailService();
       const result = await service.sendContactNotification({
         name: "Alex Rivera",
         email: "alex@example.com",
@@ -290,14 +323,17 @@ describe("Contact API Route Handler & Email Service", () => {
       });
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain("unconfigured in production");
+      expect(result.error).toContain("missing API key");
+      expect(mockSend).not.toHaveBeenCalled();
     });
 
-    it("succeeds in production when API key is provided", async () => {
-      process.env.RESEND_API_KEY = "re_prod_key_valid";
+    it("blocks production mode without CONTACT_NOTIFICATION_EMAIL and returns failure", async () => {
+      process.env.RESEND_API_KEY = "re_prod_valid_123";
+      delete process.env.CONTACT_NOTIFICATION_EMAIL;
+      process.env.CONTACT_FROM_EMAIL = "onboarding@resend.dev";
       (process.env as Record<string, string>).NODE_ENV = "production";
 
-      const service = new ProductionSafeEmailService();
+      const service = new ResendEmailService();
       const result = await service.sendContactNotification({
         name: "Alex Rivera",
         email: "alex@example.com",
@@ -305,8 +341,105 @@ describe("Contact API Route Handler & Email Service", () => {
         message: "Hello Likhith!",
       });
 
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("missing recipient");
+      expect(mockSend).not.toHaveBeenCalled();
+    });
+
+    it("blocks production mode without CONTACT_FROM_EMAIL and returns failure", async () => {
+      process.env.RESEND_API_KEY = "re_prod_valid_123";
+      process.env.CONTACT_NOTIFICATION_EMAIL = "likhithjadagam7@gmail.com";
+      delete process.env.CONTACT_FROM_EMAIL;
+      (process.env as Record<string, string>).NODE_ENV = "production";
+
+      const service = new ResendEmailService();
+      const result = await service.sendContactNotification({
+        name: "Alex Rivera",
+        email: "alex@example.com",
+        subject: "General Inquiry",
+        message: "Hello Likhith!",
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("missing sender");
+      expect(mockSend).not.toHaveBeenCalled();
+    });
+
+    it("sends email successfully via Resend when all credentials are provided", async () => {
+      process.env.RESEND_API_KEY = "re_prod_valid_123";
+      process.env.CONTACT_NOTIFICATION_EMAIL = "likhithjadagam7@gmail.com";
+      process.env.CONTACT_FROM_EMAIL = "onboarding@resend.dev";
+      (process.env as Record<string, string>).NODE_ENV = "production";
+
+      mockSend.mockResolvedValueOnce({
+        data: { id: "resend_msg_test_success_777" },
+        error: null,
+      });
+
+      const service = new ResendEmailService();
+      const result = await service.sendContactNotification({
+        name: "Alex Rivera",
+        email: "alex@example.com",
+        subject: "Partnership Inquiry",
+        message: "We would like to collaborate on a design system.",
+      });
+
       expect(result.success).toBe(true);
-      expect(result.messageId).toBeTruthy();
+      expect(result.messageId).toBe("resend_msg_test_success_777");
+      expect(mockSend).toHaveBeenCalledWith(
+        expect.objectContaining({
+          from: "onboarding@resend.dev",
+          to: "likhithjadagam7@gmail.com",
+          replyTo: "alex@example.com",
+          subject: "[Portfolio Inquiry] Partnership Inquiry - from Alex Rivera",
+        })
+      );
+    });
+
+    it("handles Resend API rejection error gracefully", async () => {
+      process.env.RESEND_API_KEY = "re_prod_valid_123";
+      process.env.CONTACT_NOTIFICATION_EMAIL = "likhithjadagam7@gmail.com";
+      process.env.CONTACT_FROM_EMAIL = "onboarding@resend.dev";
+      (process.env as Record<string, string>).NODE_ENV = "production";
+
+      mockSend.mockResolvedValueOnce({
+        data: null,
+        error: {
+          name: "validation_error",
+          message: "Domain not verified in Resend.",
+        },
+      });
+
+      const service = new ResendEmailService();
+      const result = await service.sendContactNotification({
+        name: "Alex Rivera",
+        email: "alex@example.com",
+        subject: "General Inquiry",
+        message: "Hello!",
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("Domain not verified in Resend.");
+    });
+
+    it("handles unexpected Resend exception gracefully", async () => {
+      process.env.RESEND_API_KEY = "re_prod_valid_123";
+      process.env.CONTACT_NOTIFICATION_EMAIL = "likhithjadagam7@gmail.com";
+      process.env.CONTACT_FROM_EMAIL = "onboarding@resend.dev";
+      (process.env as Record<string, string>).NODE_ENV = "production";
+
+      mockSend.mockRejectedValueOnce(new Error("Network timeout contacting Resend API"));
+
+      const service = new ResendEmailService();
+      const result = await service.sendContactNotification({
+        name: "Alex Rivera",
+        email: "alex@example.com",
+        subject: "General Inquiry",
+        message: "Hello!",
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("Network timeout contacting Resend API");
     });
   });
 
@@ -328,3 +461,4 @@ describe("Contact API Route Handler & Email Service", () => {
     });
   });
 });
+
