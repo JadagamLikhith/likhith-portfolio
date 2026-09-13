@@ -16,17 +16,17 @@ export interface ButtonProps
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", children, ...props }, ref) => {
     const baseStyles =
-      "inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:pointer-events-none disabled:opacity-50 select-none";
+      "inline-flex items-center justify-center font-medium transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo focus-visible:ring-offset-2 focus-visible:ring-offset-canvas disabled:pointer-events-none disabled:opacity-50 select-none hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.99]";
 
     const variants = {
       primary:
-        "bg-brand-indigo text-white hover:bg-[#4F46E5] active:scale-[0.98] shadow-glow",
+        "bg-brand-indigo text-white hover:bg-[#4F46E5] hover:shadow-glow shadow-md shadow-brand-indigo/10",
       secondary:
-        "bg-surface-2 text-content-primary border border-border-ghost hover:bg-surface-3 hover:border-border-hover active:scale-[0.98]",
+        "bg-surface-2 text-content-primary border border-border-ghost hover:bg-surface-3 hover:border-border-hover hover:shadow-sm",
       ghost:
-        "bg-transparent text-content-muted hover:text-content-primary hover:bg-surface-2 active:scale-[0.98]",
-      cyan: "bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/20 hover:bg-brand-cyan/20 active:scale-[0.98]",
-      link: "text-brand-indigo hover:underline underline-offset-4 p-0 h-auto",
+        "bg-transparent text-content-muted hover:text-content-primary hover:bg-surface-2",
+      cyan: "bg-brand-cyan/10 text-brand-cyan border border-brand-cyan/20 hover:bg-brand-cyan/20 hover:border-brand-cyan/40",
+      link: "text-brand-indigo hover:underline underline-offset-4 p-0 h-auto hover:translate-y-0",
     };
 
     const sizes = {

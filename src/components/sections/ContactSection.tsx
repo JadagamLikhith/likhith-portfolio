@@ -20,8 +20,11 @@ import {
   Loader2,
   RefreshCw,
 } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { editorialEase } from "@/lib/motion";
 
 export function ContactSection() {
+  const shouldReduceMotion = useReducedMotion();
   const [copied, setCopied] = React.useState(false);
   const [formState, setFormState] = React.useState({
     name: "",
@@ -154,27 +157,51 @@ export function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-20 sm:py-28 border-t border-border-ghost bg-surface-1/30 relative">
+    <section id="contact" className="py-20 sm:py-28 border-t border-border-ghost bg-surface-1/30 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Section Header */}
         <div className="max-w-2xl mb-12 sm:mb-16">
-          <div className="flex items-center gap-2 text-xs font-display font-semibold text-brand-indigo tracking-wider uppercase mb-2">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.5, ease: editorialEase }}
+            className="flex items-center gap-2 text-xs font-display font-semibold text-brand-indigo tracking-wider uppercase mb-2"
+          >
             <span>05</span>
             <span>/</span>
             <span>Direct Communication</span>
-          </div>
-          <h2 className="text-2xl sm:text-4xl font-display font-bold text-content-primary mb-4">
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.1, ease: editorialEase }}
+            className="text-2xl sm:text-4xl font-display font-bold text-content-primary mb-4"
+          >
             Let&apos;s build something exceptional.
-          </h2>
-          <p className="text-sm sm:text-base text-content-muted leading-relaxed">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.2, ease: editorialEase }}
+            className="text-sm sm:text-base text-content-muted leading-relaxed"
+          >
             Whether you are looking to collaborate on a full-stack project, discuss product UI/UX opportunities, or explore research, my inbox is open.
-          </p>
+          </motion.p>
         </div>
 
         {/* 2-Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           {/* Left Column: Direct Coordinates & Profile Links */}
-          <div className="lg:col-span-5 space-y-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98, y: 20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 0.1, ease: editorialEase }}
+            className="lg:col-span-5 space-y-6"
+          >
             <Card variant="tier1" padding="md" className="space-y-6 border border-border-ghost">
               <h3 className="text-base font-display font-bold text-content-primary">
                 Direct Contact
@@ -252,10 +279,16 @@ export function ContactSection() {
                 </div>
               </div>
             </Card>
-          </div>
+          </motion.div>
 
           {/* Right Column: Interactive Contact Form */}
-          <div className="lg:col-span-7">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 0.2, ease: editorialEase }}
+            className="lg:col-span-7"
+          >
             <Card variant="tier1" padding="lg" className="border border-border-ghost space-y-6">
               <div>
                 <h3 className="text-lg font-display font-bold text-content-primary mb-1">
@@ -407,7 +440,7 @@ export function ContactSection() {
                 </div>
               </form>
             </Card>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

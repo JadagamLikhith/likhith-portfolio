@@ -34,4 +34,11 @@ describe("HeroSection Component", () => {
     const resumeLink = screen.getByLabelText(/View Resume \(PDF\)/i);
     expect(resumeLink).toHaveAttribute("href", "/JADAGAM_LIKHITH_Resume.pdf");
   });
+
+  it("renders authentic portrait image with accessible alt text", () => {
+    render(<HeroSection />);
+    const portraitImg = screen.getByAltText("Portrait of Likhith");
+    expect(portraitImg).toBeInTheDocument();
+  });
 });
+

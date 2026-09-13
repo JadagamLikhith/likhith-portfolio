@@ -23,6 +23,7 @@ test.describe("Portfolio Homepage Verification", () => {
     await expect(
       page.getByRole("button", { name: /Explore Featured Work/i })
     ).toBeVisible();
+    await expect(page.getByAltText("Portrait of Likhith")).toBeVisible();
   });
 
   test("renders DevBridge and E-Library showcases", async ({ page }) => {
