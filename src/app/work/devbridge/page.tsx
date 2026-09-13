@@ -9,6 +9,11 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { DeviceFrame } from "@/components/ui/DeviceFrame";
+import { JsonLd } from "@/components/seo/JsonLd";
+import {
+  generateSoftwareApplicationSchema,
+  generateBreadcrumbSchema,
+} from "@/lib/seo";
 import {
   ArrowLeft,
   ArrowRight,
@@ -28,14 +33,57 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "DevBridge Case Study — Jadagam Likhith",
+  title: "DevBridge Case Study — Android & Material Design 3",
   description:
     "Developer Collaboration, Sponsorship & Feedback Platform: A native Android application built with Kotlin, Jetpack Compose, and Material Design 3.",
+  keywords: [
+    "DevBridge",
+    "Kotlin Android App",
+    "Jetpack Compose",
+    "Material Design 3",
+    "Developer Collaboration",
+    "Jadagam Likhith Case Study",
+    "Mobile UI/UX Design",
+  ],
+  alternates: {
+    canonical: "/work/devbridge",
+  },
+  openGraph: {
+    type: "article",
+    title: "DevBridge Case Study — Android & Material Design 3",
+    description:
+      "Developer Collaboration, Sponsorship & Feedback Platform: A native Android application built with Kotlin, Jetpack Compose, and Material Design 3.",
+    url: "/work/devbridge",
+    images: [
+      {
+        url: "/images/logo.png",
+        width: 300,
+        height: 80,
+        alt: "DevBridge — Jadagam Likhith",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "DevBridge Case Study — Android & Material Design 3",
+    description:
+      "Developer Collaboration, Sponsorship & Feedback Platform: A native Android application built with Kotlin, Jetpack Compose, and Material Design 3.",
+    creator: "@ZenMaestro",
+    images: ["/images/logo.png"],
+  },
 };
 
 export default function DevBridgeCaseStudy() {
+  const softwareSchema = generateSoftwareApplicationSchema();
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Overview", url: "/" },
+    { name: "DevBridge Case Study", url: "/work/devbridge" },
+  ]);
+
   return (
     <div className="min-h-screen bg-canvas text-content-primary flex flex-col justify-between selection:bg-brand-indigo/30 selection:text-white">
+      <JsonLd data={softwareSchema} />
+      <JsonLd data={breadcrumbSchema} />
       <Navbar />
 
       <main className="flex-grow pt-32 sm:pt-40 pb-20 sm:pb-28">

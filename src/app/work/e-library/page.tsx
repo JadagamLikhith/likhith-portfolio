@@ -7,6 +7,11 @@ import { Footer } from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { JsonLd } from "@/components/seo/JsonLd";
+import {
+  generateScholarlyArticleSchema,
+  generateBreadcrumbSchema,
+} from "@/lib/seo";
 import {
   ArrowLeft,
   ArrowRight,
@@ -26,16 +31,58 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "E-Library Research Paper Case Study — Jadagam Likhith",
+  title: "E-Library Research Paper Case Study — IJRAR Publication",
   description:
     "Published research in IJRAR (Vol 12, Issue 2, Paper ID: IJRAR25B3067) on an interactive, engaging e-library platform with RBAC, dynamic recommendations, and modular Flask/MySQL architecture.",
+  keywords: [
+    "E-Library Platform",
+    "IJRAR Research Paper",
+    "IJRAR25B3067",
+    "Flask Web Application",
+    "MySQL Database Design",
+    "Role-Based Access Control",
+    "Jadagam Likhith Research",
+  ],
+  alternates: {
+    canonical: "/work/e-library",
+  },
+  openGraph: {
+    type: "article",
+    title: "E-Library Research Paper Case Study — IJRAR Publication",
+    description:
+      "Published research in IJRAR (Vol 12, Issue 2, Paper ID: IJRAR25B3067) on an interactive, engaging e-library platform with RBAC, dynamic recommendations, and modular Flask/MySQL architecture.",
+    url: "/work/e-library",
+    images: [
+      {
+        url: "/images/logo.png",
+        width: 300,
+        height: 80,
+        alt: "E-Library Research — Jadagam Likhith",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "E-Library Research Paper Case Study — IJRAR Publication",
+    description:
+      "Published research in IJRAR (Vol 12, Issue 2, Paper ID: IJRAR25B3067) on an interactive, engaging e-library platform with RBAC, dynamic recommendations, and modular Flask/MySQL architecture.",
+    creator: "@ZenMaestro",
+    images: ["/images/logo.png"],
+  },
 };
 
 export default function ELibraryCaseStudy() {
   const details = eLibraryProject.publicationDetails;
+  const scholarlySchema = generateScholarlyArticleSchema();
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: "Overview", url: "/" },
+    { name: "E-Library Research Case Study", url: "/work/e-library" },
+  ]);
 
   return (
     <div className="min-h-screen bg-canvas text-content-primary flex flex-col justify-between selection:bg-brand-indigo/30 selection:text-white">
+      <JsonLd data={scholarlySchema} />
+      <JsonLd data={breadcrumbSchema} />
       <Navbar />
 
       <main className="flex-grow pt-32 sm:pt-40 pb-20 sm:pb-28">

@@ -6,10 +6,15 @@ import { CapabilitiesSection } from "@/components/sections/CapabilitiesSection";
 import { ExperienceSection } from "@/components/sections/ExperienceSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { Footer } from "@/components/layout/Footer";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { generateProfilePageSchema } from "@/lib/seo";
 
 export default function Home() {
+  const profilePageSchema = generateProfilePageSchema();
+
   return (
     <div className="min-h-screen bg-canvas text-content-primary flex flex-col justify-between selection:bg-brand-indigo/30 selection:text-white">
+      <JsonLd data={profilePageSchema} />
       {/* Fixed Navigation Header */}
       <Navbar />
 

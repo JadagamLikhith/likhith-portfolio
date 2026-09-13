@@ -76,7 +76,9 @@ test.describe("Portfolio Homepage Verification", () => {
     await expect(page).toHaveURL(/\//);
   });
 
-  test("serves valid robots.txt and sitemap.xml endpoints", async ({ page }) => {
+  test("serves valid robots.txt, sitemap.xml, and manifest endpoints", async ({
+    page,
+  }) => {
     const robotsRes = await page.goto("/robots.txt");
     expect(robotsRes?.status()).toBe(200);
     const robotsText = await robotsRes?.text();
@@ -88,5 +90,53 @@ test.describe("Portfolio Homepage Verification", () => {
     const sitemapText = await sitemapRes?.text();
     expect(sitemapText).toContain("/work/devbridge");
     expect(sitemapText).toContain("/work/e-library");
+
+    const manifestRes = await page.goto("/manifest.webmanifest");
+    expect(manifestRes?.status()).toBe(200);
+    const manifestJson = await manifestRes?.json();
+    expect(manifestJson.name).toContain("Jadagam Likhith");
+    expect(manifestJson.display).toBe("standalone");
+  });
+
+  test("injects valid JSON-LD structured data on homepage and case studies", async ({
+    page,
+  }) => {
+    // 1. Homepage JSON-LD
+    await page.goto("/");
+    const jsonLdScripts = await page.locator('script[type="application/ld+json"]').all();
+    expect(jsonLdScripts.length).toBeGreaterThanOrEqual(2);
+
+    const homepageJsonLdTexts = await Promise.all(
+      jsonLdScripts.map((s) => s.textContent())
+    );
+    const combinedHomepageJsonLd = homepageJsonLdTexts.join(" ");
+    expect(combinedHomepageJsonLd).toContain('"@type":"Person"');
+    expect(combinedHomepageJsonLd).toContain('"@type":"WebSite"');
+    expect(combinedHomepageJsonLd).toContain('"@type":"ProfilePage"');
+    expect(combinedHomepageJsonLd).toContain("Jadagam Likhith");
+
+    // 2. DevBridge Case Study JSON-LD
+    await page.goto("/work/devbridge");
+    const devbridgeJsonLdTexts = await Promise.all(
+      (await page.locator('script[type="application/ld+json"]').all()).map((s) =>
+        s.textContent()
+      )
+    );
+    const combinedDevBridgeJsonLd = devbridgeJsonLdTexts.join(" ");
+    expect(combinedDevBridgeJsonLd).toContain('"@type":"SoftwareApplication"');
+    expect(combinedDevBridgeJsonLd).toContain('"@type":"BreadcrumbList"');
+    expect(combinedDevBridgeJsonLd).toContain("DevBridge");
+
+    // 3. E-Library Case Study JSON-LD
+    await page.goto("/work/e-library");
+    const eLibraryJsonLdTexts = await Promise.all(
+      (await page.locator('script[type="application/ld+json"]').all()).map((s) =>
+        s.textContent()
+      )
+    );
+    const combinedELibraryJsonLd = eLibraryJsonLdTexts.join(" ");
+    expect(combinedELibraryJsonLd).toContain('"@type":"ScholarlyArticle"');
+    expect(combinedELibraryJsonLd).toContain('"@type":"BreadcrumbList"');
+    expect(combinedELibraryJsonLd).toContain("IJRAR25B3067");
   });
 });

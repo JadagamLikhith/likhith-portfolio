@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { generatePersonSchema, generateWebsiteSchema } from "@/lib/seo";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -34,18 +36,28 @@ export const metadata: Metadata = {
     "Personal portfolio of Jadagam Likhith: Computer Science Engineer & Product Designer building resilient backend systems and refined Material Design 3 interfaces.",
   keywords: [
     "Jadagam Likhith",
+    "Likhith Jadagam",
     "Full Stack Developer",
     "Product UI/UX Designer",
+    "Computer Science Engineer",
     "Kotlin",
-    "Jetpack Compose",
+    "Android Jetpack Compose",
     "React.js",
+    "Next.js",
     "Node.js",
     "Flask",
     "MySQL",
     "Material Design 3",
+    "DevBridge Android",
+    "IJRAR Researcher",
+    "Vijayawada Software Developer",
+    "Web Application Developer",
   ],
-  authors: [{ name: "Jadagam Likhith" }],
+  authors: [{ name: "Jadagam Likhith", url: siteUrl }],
   creator: "Jadagam Likhith",
+  publisher: "Jadagam Likhith",
+  category: "technology",
+  classification: "Portfolio",
   robots: {
     index: true,
     follow: true,
@@ -92,8 +104,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const personSchema = generatePersonSchema();
+  const websiteSchema = generateWebsiteSchema();
+
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable} dark scroll-smooth`}>
+      <head>
+        <JsonLd data={personSchema} />
+        <JsonLd data={websiteSchema} />
+      </head>
       <body className="min-h-screen bg-canvas text-content-primary antialiased selection:bg-brand-indigo/30 selection:text-white">
         {children}
       </body>
