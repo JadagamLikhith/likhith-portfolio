@@ -12,7 +12,7 @@ This document is the authoritative factual content repository for Jadagam Likhit
 * **Institution:** Lingayas Institute of Management and Technology, Vijayawada
 * **Expected Graduation:** 2027
 * **Cumulative GPA (CGPA):** 8.0 / 10.0
-* **Contact Email:** likhiths602@gmail.com
+* **Contact Email:** likhithjadagam7@gmail.com
 * **GitHub Profile:** https://github.com/ZenMaestro
 * **LinkedIn Profile:** https://www.linkedin.com/in/jadagam-likhith-65087330a
 * **Downloadable Resume File:** `/JADAGAM_LIKHITH_Resume.pdf` (Authentic source PDF, unaltered)

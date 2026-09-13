@@ -16,7 +16,7 @@ describe("Authoritative Portfolio Data Integrity", () => {
     );
     expect(profileData.location).toContain("Vijayawada");
     expect(profileData.educationSummary.cgpa).toContain("8.0");
-    expect(profileData.socialLinks.email).toBe("likhiths602@gmail.com");
+    expect(profileData.socialLinks.email).toBe("likhithjadagam7@gmail.com");
     expect(profileData.socialLinks.github).toBe(
       "https://github.com/ZenMaestro"
     );

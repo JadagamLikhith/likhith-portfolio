@@ -17,7 +17,7 @@ export const profileData: ProfileData = {
   socialLinks: {
     github: "https://github.com/ZenMaestro",
     linkedin: "https://www.linkedin.com/in/jadagam-likhith-65087330a",
-    email: "likhiths602@gmail.com",
+    email: "likhithjadagam7@gmail.com",
   },
   resumeUrl: "/JADAGAM_LIKHITH_Resume.pdf",
   availabilityStatus: "CSE '27 • Vijayawada, AP",

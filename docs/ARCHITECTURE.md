@@ -141,7 +141,7 @@ graph TD
    * Consistent response envelopes:
      * Success: `{ success: true, message: "Your message has been received." }`
      * Client Error: `{ success: false, error: "Validation failed", details: [...] }`
-     * Server Error: `{ success: false, error: "Unable to send message at this time. Please email likhiths602@gmail.com directly." }`
+     * Server Error: `{ success: false, error: "Unable to send message at this time. Please email likhithjadagam7@gmail.com directly." }`
    * Never leaks internal server stack traces or environment variables.
 
 ---
