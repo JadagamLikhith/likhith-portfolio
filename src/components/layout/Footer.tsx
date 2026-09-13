@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { profileData } from "@/data/profile";
 import { Github, Linkedin, Mail, ArrowUp } from "lucide-react";
 
@@ -15,15 +16,20 @@ export function Footer() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 pb-10 border-b border-border-ghost">
           {/* Brand & Positioning */}
-          <div className="space-y-2 max-w-md">
+          <div className="space-y-3 max-w-md">
             <Link
               href="/"
-              className="inline-flex items-center gap-2.5 font-display font-bold text-lg text-content-primary hover:text-brand-indigo transition-colors"
+              className="inline-flex items-center gap-2.5 font-display font-bold text-lg text-content-primary hover:opacity-90 transition-opacity"
+              aria-label="Jadagam Likhith — Home"
             >
-              <span className="w-7 h-7 rounded-lg bg-surface-2 border border-border-ghost flex items-center justify-center text-xs text-brand-indigo">
-                JL
-              </span>
-              {profileData.name}
+              <Image
+                src="/images/logo.png"
+                alt="Jadagam Likhith"
+                width={160}
+                height={42}
+                className="h-8 sm:h-9 w-auto object-contain"
+              />
+              <span className="sr-only">{profileData.name}</span>
             </Link>
             <p className="text-sm text-content-muted leading-relaxed">
               {profileData.primaryPositioning} based in {profileData.location}. Crafting scalable backend systems and high-fidelity Material Design 3 interfaces.

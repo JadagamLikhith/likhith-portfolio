@@ -340,9 +340,6 @@ export function HeroSection() {
                   opacity: portraitOpacity,
                   x: mousePortraitX,
                 }}
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.7, delay: 0.2 }}
                 className="relative z-10 transition-transform duration-200 ease-out"
               >
                 {/* Architectural Frame & Obsidian Surface */}

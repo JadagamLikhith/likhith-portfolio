@@ -65,6 +65,14 @@ export const metadata: Metadata = {
     description:
       "Bridging backend engineering logic and human-centered product craft.",
     siteName: "Jadagam Likhith Portfolio",
+    images: [
+      {
+        url: "/images/logo.png",
+        width: 300,
+        height: 80,
+        alt: "Jadagam Likhith — Full Stack Developer × Product UI/UX Designer",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -72,6 +80,7 @@ export const metadata: Metadata = {
     description:
       "Bridging backend engineering logic and human-centered product craft.",
     creator: "@ZenMaestro",
+    images: ["/images/logo.png"],
   },
   alternates: {
     canonical: "/",

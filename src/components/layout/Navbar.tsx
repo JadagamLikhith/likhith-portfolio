@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { profileData } from "@/data/profile";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -57,18 +58,19 @@ export function Navbar() {
           <Link
             href="/"
             className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-indigo rounded-lg"
+            aria-label="Jadagam Likhith — Home"
           >
-            <div className="w-9 h-9 rounded-xl bg-surface-2 border border-border-ghost flex items-center justify-center font-display font-bold text-sm text-brand-indigo group-hover:border-brand-indigo/40 group-hover:scale-105 transition-all shadow-glow">
-              JL
+            <div className="relative h-9 w-auto flex items-center">
+              <Image
+                src="/images/logo.png"
+                alt="Jadagam Likhith"
+                width={150}
+                height={40}
+                priority
+                className="h-8 sm:h-9 w-auto object-contain transition-transform duration-200 group-hover:scale-[1.02]"
+              />
             </div>
-            <div className="flex flex-col">
-              <span className="font-display font-semibold text-sm sm:text-base text-content-primary tracking-tight group-hover:text-brand-indigo transition-colors">
-                {profileData.name}
-              </span>
-              <span className="hidden sm:inline-block text-[11px] text-content-muted font-normal">
-                Full Stack × Product Design
-              </span>
-            </div>
+            <span className="sr-only">Jadagam Likhith</span>
           </Link>
 
           {/* Availability Status Badge (Desktop) */}

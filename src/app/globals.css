@@ -9,6 +9,12 @@
 }
 
 @layer base {
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: clip;
+  }
+
   body {
     @apply bg-canvas text-content-primary font-sans antialiased selection:bg-brand-indigo/30 selection:text-white;
   }

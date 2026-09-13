@@ -198,7 +198,7 @@ export function ContactSection() {
           <motion.div
             initial={{ opacity: 0, scale: 0.98, y: 20 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 0.1, ease: editorialEase }}
             className="lg:col-span-5 space-y-6"
           >
@@ -285,7 +285,7 @@ export function ContactSection() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, delay: shouldReduceMotion ? 0 : 0.2, ease: editorialEase }}
             className="lg:col-span-7"
           >

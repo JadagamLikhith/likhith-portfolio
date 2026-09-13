@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { profileData } from "@/data/profile";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -44,13 +46,22 @@ export function MobileNav({
       {/* Drawer Container */}
       <div className="fixed top-[65px] left-0 right-0 bottom-0 bg-[#0A0C12] border-t border-border-ghost p-6 flex flex-col justify-between overflow-y-auto">
         <div className="space-y-6">
-          {/* Status Tag */}
+          {/* Brand & Status Header */}
           <div className="flex items-center justify-between pb-4 border-b border-border-ghost">
+            <Link href="/" onClick={onClose} className="flex items-center" aria-label="Jadagam Likhith — Home">
+              <Image
+                src="/images/logo.png"
+                alt="Jadagam Likhith"
+                width={130}
+                height={35}
+                className="h-7 w-auto object-contain"
+              />
+              <span className="sr-only">Jadagam Likhith</span>
+            </Link>
             <Badge variant="cyan" size="sm">
               <span className="w-1.5 h-1.5 rounded-full bg-brand-cyan animate-pulse mr-1" />
               {profileData.availabilityStatus}
             </Badge>
-            <span className="text-xs text-content-muted">Vijayawada, India</span>
           </div>
 
           {/* Navigation Links */}
